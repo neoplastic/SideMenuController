@@ -26,6 +26,8 @@ import UIKit
 public protocol SideMenuControllerDelegate: class {
     func sideMenuControllerDidHide(_ sideMenuController: SideMenuController)
     func sideMenuControllerDidReveal(_ sideMenuController: SideMenuController)
+    func sideMenuControllerCenterControllerChanged(_ sideMenuController: SideMenuController, newController: UIViewController)
+    func sideMenuControllerSideControllerChanged(_ sideMenuController: SideMenuController, newController: UIViewController)
 }
 
 // MARK: - Public methods -
@@ -150,8 +152,16 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
         return type(of: self).preferences
     }()
     
-    fileprivate(set) open var centerViewController: UIViewController!
-    fileprivate(set) open var sideViewController: UIViewController!
+    fileprivate(set) open var centerViewController: UIViewController! {
+        didSet {
+            self.delegate?.sideMenuControllerCenterControllerChanged(self, newController: centerViewController)
+        }
+    }
+    fileprivate(set) open var sideViewController: UIViewController! {
+        didSet {
+            self.delegate?.sideMenuControllerSideControllerChanged(self, newController: centerViewController)
+        }
+    }
     var centerNavController: UINavigationController? {
         return centerViewController as? UINavigationController
     }
